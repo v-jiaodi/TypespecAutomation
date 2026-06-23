@@ -29,6 +29,8 @@ beforeEach(() => {
       const filePath = path.resolve(dir, file)
       fs.rmSync(filePath, { recursive: true, force: true })
     }
+  } else {
+    fs.mkdirSync(dir, { recursive: true })
   }
   dir = path.resolve(__dirname, "../../EmitTypespecProjectStubJs/tsp-output")
   if (fs.existsSync(dir)) {
@@ -36,6 +38,8 @@ beforeEach(() => {
       const filePath = path.resolve(dir, file)
       fs.rmSync(filePath, { recursive: true, force: true })
     }
+  } else {
+    fs.mkdirSync(dir, { recursive: true })
   }
 })
 
@@ -63,7 +67,6 @@ describe.each(EmitCasesConfigList)("EmitTypespecProject", async (item) => {
     await installExtensionForCommand(page, extensionDir)
     if (triggerType === "Command") {
       await startWithCommandPalette(page, {
-        folderName: "EmitTypespecProject",
         command: "Emit from Typespec",
       })
     } else if (triggerType === "Click") {

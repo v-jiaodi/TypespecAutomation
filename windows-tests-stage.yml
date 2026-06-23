@@ -3,13 +3,14 @@ jobs:
     pool:
       vmImage: "windows-latest"
     steps:
+      - checkout: externalRepo
       - task: NodeTool@0
         inputs:
           versionSpec: "22.17.0"
         displayName: "Install Node.js"
 
       - script: |
-          npm install
+          npm ci
         displayName: "Install dependencies"
 
       - script: |
@@ -33,6 +34,7 @@ jobs:
     pool:
       vmImage: "windows-latest"
     steps:
+      - checkout: externalRepo
       - task: NodeTool@0
         inputs:
           versionSpec: "22.17.0"
@@ -52,7 +54,7 @@ jobs:
         displayName: "Install Maven"
 
       - script: |
-          npm install
+          npm ci
         displayName: "Install dependencies"
 
       - script: |
@@ -78,13 +80,14 @@ jobs:
     pool:
       vmImage: "windows-latest"
     steps:
+      - checkout: externalRepo
       - task: NodeTool@0
         inputs:
           versionSpec: "22.17.0"
         displayName: "Install Node.js"
 
       - script: |
-          npm install
+          npm ci
         displayName: "Install dependencies"
 
       - script: |
@@ -108,13 +111,14 @@ jobs:
     pool:
       vmImage: "windows-latest"
     steps:
+      - checkout: externalRepo
       - task: NodeTool@0
         inputs:
           versionSpec: "22.17.0"
         displayName: "Install Node.js"
 
       - script: |
-          npm install
+          npm ci
         displayName: "Install dependencies"
 
       - script: |
