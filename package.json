@@ -12,7 +12,11 @@
     "test:preview": "vitest --root ./src/previewTypespec"
   },
   "overrides": {
-    "@typespec/emitter-framework": "0.17.1-dev.2"
+    "@typespec/emitter-framework": "0.18.0",
+    "@alloy-js/core": "0.23.1",
+    "@alloy-js/csharp": "0.23.0",
+    "@alloy-js/typescript": "0.23.0",
+    "@alloy-js/msbuild": "0.23.0"
   },
   "dependencies": {
     "@azure-tools/typespec-azure-core": "^0.69.0",

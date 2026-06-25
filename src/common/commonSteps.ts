@@ -123,7 +123,7 @@ async function startWithRightClick(page: Page, command: string, type?: string) {
  * @param file When selecting a file, just pass it in. If you need to select a folder, you do not need to pass this parameter in.
  */
 async function selectFolder(file: string = "") {
-  await sleep(8)
+  await sleep(20)
   await keyboard.type(file)
   if (os.platform() === "win32" 
     && file.includes("CreateTypespecProject")
