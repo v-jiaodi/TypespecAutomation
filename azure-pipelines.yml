@@ -24,7 +24,7 @@ resources:
       type: github
       name: v-xuto/TypespecAutomation
       endpoint: xuto_pat
-      ref: v-jiaodi/test-629
+      ref: test-629
 
 stages:
   - stage: WindowsTests
