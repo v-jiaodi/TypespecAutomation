@@ -1,0 +1,62 @@
+parameters:
+  - name: jobName
+    type: string
+  - name: testScript
+    type: string
+  - name: displayName
+    type: string
+  - name: artifactSuffix
+    type: string
+  - name: installDotNet
+    type: boolean
+    default: false
+  - name: installMaven
+    type: boolean
+    default: false
+
+jobs:
+  - job: ${{ parameters.jobName }}
+    pool:
+      vmImage: "windows-latest"
+    steps:
+      - checkout: externalRepo
+
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "22.17.0"
+        displayName: "Install Node.js"
+
+      - ${{ if eq(parameters.installDotNet, true) }}:
+        - task: UseDotNet@2
+          inputs:
+            packageType: "sdk"
+            version: "10.x"
+          displayName: "Install .NET SDK"
+
+      - ${{ if eq(parameters.installMaven, true) }}:
+        - script: choco install maven -y
+          displayName: "Install Maven"
+
+      - script: npm ci
+        displayName: "Install dependencies"
+
+      - script: |
+          echo "Running ${{ parameters.displayName }}"
+          npm run ${{ parameters.testScript }}
+        displayName: "${{ parameters.displayName }}"
+        env:
+          BUILD_ARTIFACT_STAGING_DIRECTORY: $(Build.ArtifactStagingDirectory)
+          CI: true
+          ${{ if eq(parameters.installMaven, true) }}:
+            JAVA_HOME: $(JAVA_HOME_21_X64)
+            PATH: $(JAVA_HOME_21_X64)\bin;$(PATH)
+        continueOnError: true
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          path: "$(Build.ArtifactStagingDirectory)"
+          artifact: "screenshots-windows-${{ parameters.artifactSuffix }}"
+          publishLocation: "Container"
+          includePatterns: "images-windows/**/*.png"
+        displayName: "Publish screenshots to Artifacts"
+        condition: always()

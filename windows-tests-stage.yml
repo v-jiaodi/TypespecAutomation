@@ -1,139 +1,30 @@
 jobs:
-  - job: RunWindowsTests_1_CreateTypespecProject
-    pool:
-      vmImage: "windows-latest"
-    steps:
-      - checkout: externalRepo
-      - task: NodeTool@0
-        inputs:
-          versionSpec: "22.17.0"
-        displayName: "Install Node.js"
+  - template: templates/windows-test-job.yml
+    parameters:
+      jobName: RunWindowsTests_1_CreateTypespecProject
+      testScript: test:create
+      displayName: Run Create Test Cases
+      artifactSuffix: create
 
-      - script: |
-          npm ci
-        displayName: "Install dependencies"
+  - template: templates/windows-test-job.yml
+    parameters:
+      jobName: RunWindowsTests_2_EmitTypespecProject
+      testScript: test:emit
+      displayName: Run Emit Test Cases
+      artifactSuffix: emit
+      installDotNet: true
+      installMaven: true
 
-      - script: |
-          echo "Running Create Test Cases"
-          npm run test:create
-        displayName: "Run Create Test Cases"
-        env:
-          BUILD_ARTIFACT_STAGING_DIRECTORY: $(Build.ArtifactStagingDirectory)
-          CI: true
-        continueOnError: true
+  - template: templates/windows-test-job.yml
+    parameters:
+      jobName: RunWindowsTests_3_ImportTypespecProject
+      testScript: test:import
+      displayName: Run Import Test Cases
+      artifactSuffix: import
 
-      - task: PublishBuildArtifacts@1
-        inputs:
-          path: "$(Build.ArtifactStagingDirectory)"
-          artifact: "screenshots"
-          publishLocation: "Container"
-          includePatterns: "images-windows/**/*.png"
-        displayName: "Publish screenshots to Artifacts"
-
-  - job: RunWindowsTests_2_EmitTypespecProject
-    pool:
-      vmImage: "windows-latest"
-    steps:
-      - checkout: externalRepo
-      - task: NodeTool@0
-        inputs:
-          versionSpec: "22.17.0"
-        displayName: "Install Node.js"
-
-      - task: UseDotNet@2
-        inputs:
-          packageType: "sdk"
-          version: "10.x"
-        displayName: "Install .NET SDK"
-
-      - script: |
-          wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
-          tar -xzf apache-maven-3.9.6-bin.tar.gz -C /usr/local/
-          echo 'export PATH="/usr/local/apache-maven-3.9.6/bin:$PATH"' >> ~/.bashrc
-          mvn -v
-        displayName: "Install Maven"
-
-      - script: |
-          npm ci
-        displayName: "Install dependencies"
-
-      - script: |
-          echo "Running Emit Test Cases"
-          npm run test:emit
-        displayName: "Run Emit Test Cases"
-        env:
-          BUILD_ARTIFACT_STAGING_DIRECTORY: $(Build.ArtifactStagingDirectory)
-          CI: true
-          JAVA_HOME: $(JAVA_HOME_21_X64)
-          PATH: $(JAVA_HOME_21_X64)\bin;$(PATH)
-        continueOnError: true
-
-      - task: PublishBuildArtifacts@1
-        inputs:
-          path: "$(Build.ArtifactStagingDirectory)"
-          artifact: "screenshots"
-          publishLocation: "Container"
-          includePatterns: "images-windows/**/*.png"
-        displayName: "Publish screenshots to Artifacts"
-
-  - job: RunWindowsTests_3_ImportTypespecProject
-    pool:
-      vmImage: "windows-latest"
-    steps:
-      - checkout: externalRepo
-      - task: NodeTool@0
-        inputs:
-          versionSpec: "22.17.0"
-        displayName: "Install Node.js"
-
-      - script: |
-          npm ci
-        displayName: "Install dependencies"
-
-      - script: |
-          echo "Running Import Test Cases"
-          npm run test:import
-        displayName: "Run Import Test Cases"
-        env:
-          BUILD_ARTIFACT_STAGING_DIRECTORY: $(Build.ArtifactStagingDirectory)
-          CI: true
-        continueOnError: true
-
-      - task: PublishBuildArtifacts@1
-        inputs:
-          path: "$(Build.ArtifactStagingDirectory)"
-          artifact: "screenshots"
-          publishLocation: "Container"
-          includePatterns: "images-windows/**/*.png"
-        displayName: "Publish screenshots to Artifacts"
-
-  - job: RunWindowsTests_4_PreviewTypespecProject
-    pool:
-      vmImage: "windows-latest"
-    steps:
-      - checkout: externalRepo
-      - task: NodeTool@0
-        inputs:
-          versionSpec: "22.17.0"
-        displayName: "Install Node.js"
-
-      - script: |
-          npm ci
-        displayName: "Install dependencies"
-
-      - script: |
-          echo "Running Preview Test Cases"
-          npm run test:preview
-        displayName: "Run Preview Test Cases"
-        env:
-          BUILD_ARTIFACT_STAGING_DIRECTORY: $(Build.ArtifactStagingDirectory)
-          CI: true
-        continueOnError: true
-
-      - task: PublishBuildArtifacts@1
-        inputs:
-          path: "$(Build.ArtifactStagingDirectory)"
-          artifact: "screenshots"
-          publishLocation: "Container"
-          includePatterns: "images-windows/**/*.png"
-        displayName: "Publish screenshots to Artifacts"
+  - template: templates/windows-test-job.yml
+    parameters:
+      jobName: RunWindowsTests_4_PreviewTypespecProject
+      testScript: test:preview
+      displayName: Run Preview Test Cases
+      artifactSuffix: preview
