@@ -30,8 +30,8 @@ resources:
   repositories:
     - repository: externalRepo
       type: github
-      name: v-xuto/TypespecAutomation
-      endpoint: xuto_pat
+      name: v-jiaodi/TypespecAutomation
+      endpoint: jiao_pat
       ref: ${{ if ne(parameters.prNumber, '') }}refs/pull/${{ parameters.prNumber }}/head${{ else }}${{ parameters.prBranch }}${{ endif }}
 
 stages:
