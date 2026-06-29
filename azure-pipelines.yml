@@ -1,11 +1,9 @@
-trigger:
-  branches:
-    include:
-      - master
+trigger: none
 
 pr:
   branches:
     include:
+      - main
       - master
 
 parameters:
@@ -32,7 +30,7 @@ resources:
       type: github
       name: v-jiaodi/TypespecAutomation
       endpoint: jiao_pat
-      ref: ${{ if ne(parameters.prNumber, '') }}refs/pull/${{ parameters.prNumber }}/head${{ else }}${{ parameters.prBranch }}${{ endif }}
+      ref: ${{ coalesce(variables['System.PullRequest.SourceBranch'], variables['Build.SourceBranch'], 'refs/heads/master') }}
 
 stages:
   - stage: WindowsTests
